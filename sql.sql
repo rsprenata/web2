@@ -393,3 +393,49 @@ BEGIN
 		UPDATE tb_cliente SET id_cidade = (SELECT random()*(261)+1) WHERE id_cliente = rec.id_cliente;
    END LOOP;
 END; $$
+
+
+CREATE TABLE tb_produto (
+	id_produto SERIAL PRIMARY KEY,
+	nome_produto VARCHAR(100)
+);
+
+CREATE TABLE tb_tipo_atendimento (
+	id_tipo_atendimento SERIAL PRIMARY KEY,
+	nome_tipo_atendimento VARCHAR(50)
+);
+
+CREATE TABLE tb_atendimento (
+	id_atendimento SERIAL PRIMARY KEY,
+	dt_hr_atendimento DATE,
+	dsc_atendimento VARCHAR(255),
+	id_produto INTEGER,
+	id_tipo_atendimento INTEGER,
+	id_usuario INTEGER,
+	id_cliente INTEGER,
+	res_atendimento CHAR(1),
+	
+	FOREIGN KEY (id_produto) REFERENCES tb_produto (id_produto),
+	FOREIGN KEY (id_tipo_atendimento) REFERENCES tb_tipo_atendimento (id_tipo_atendimento),
+	FOREIGN KEY (id_usuario) REFERENCES tb_usuario (id_usuario),
+	FOREIGN KEY (id_cliente) REFERENCES tb_cliente (id_cliente)
+);
+
+
+INSERT INTO tb_produto (nome_produto) values ('Conversor USB para Serial');
+INSERT INTO tb_produto (nome_produto) values ('SSD 120GB Sandisk SSD Plus 310MB/530MB/s 20X');
+INSERT INTO tb_produto (nome_produto) values ('Fonte ATX 350W reais C3Tech PS-350 24 pinos c/ chave');
+INSERT INTO tb_produto (nome_produto) values ('Teclado e mouse com fio Logitech Desktop MK120');
+INSERT INTO tb_produto (nome_produto) values ('Conversor USB para Serial');
+INSERT INTO tb_produto (nome_produto) values ('Bateria chumbo-acido Unipower UP1270E, 12V, 7Ah, F187');
+INSERT INTO tb_produto (nome_produto) values ('Álcool isopropílico puro, Isopropanol Implastec, 110ml');
+INSERT INTO tb_produto (nome_produto) values ('Placa de rede D-Link DGE-528T GigaExpress 10/100/1000Mb');
+INSERT INTO tb_produto (nome_produto) values ('Adaptador de vídeo HDMI p/ VGA Plus Cable ADP-002');
+INSERT INTO tb_produto (nome_produto) values ('Pasta térmica p/ componentes eletrônicos Implastec 10 g');
+
+INSERT INTO tb_tipo_atendimento (nome_tipo_atendimento) values ('Manutenção de hardware');
+INSERT INTO tb_tipo_atendimento (nome_tipo_atendimento) values ('Troca/instalação de hardware');
+INSERT INTO tb_tipo_atendimento (nome_tipo_atendimento) values ('Limpeza de hardware');
+INSERT INTO tb_tipo_atendimento (nome_tipo_atendimento) values ('Instalação de software');
+
+
