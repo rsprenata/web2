@@ -30,6 +30,9 @@
                   <a class="nav-link js-scroll-trigger active" href="ClientesServlet">Cadastro de Clientes</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="atendimentoListar.jsp">Atendimentos</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="LogoutServlet">Sair</a>
                 </li>
               </ul>

@@ -27,6 +27,9 @@
               <ul class="container navbar-nav">
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="ClientesServlet">Cadastro de Clientes</a>
+                </li>              
+                <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="atendimentoListar.jsp">Atendimentos</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="LogoutServlet">Sair</a>
