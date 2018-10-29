@@ -3,6 +3,7 @@ package com.ufpr.tads.web2.servlets;
 import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.beans.Usuario;
 import com.ufpr.tads.web2.dao.UsuarioDao;
+import com.ufpr.tads.web2.facade.LoginFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -29,8 +30,9 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String login = request.getParameter("login");
         String senha = request.getParameter("senha");
-        UsuarioDao uDao = new UsuarioDao();
-        Usuario usuario = uDao.loginValido(login, senha);
+        
+        
+        Usuario usuario = LoginFacade.loginValido(login, senha);
         
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -40,10 +42,10 @@ public class LoginServlet extends HttpServlet {
                 lb.setNome(usuario.getNome());
                 HttpSession session = request.getSession();
                 session.setAttribute("logado", lb);
-                response.sendRedirect("portal.jsp");
+                response.sendRedirect("view/portal.jsp");
             } else {
                 request.setAttribute("msg", "Usuário/Senha inválidos.");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/index.jsp");
                 rd.forward(request, response);
             }
         }

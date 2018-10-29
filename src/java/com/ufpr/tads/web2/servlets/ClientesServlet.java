@@ -46,14 +46,14 @@ public class ClientesServlet extends HttpServlet {
             if ("list".equals(action) || null == action || "".equals(action)) {
                 List<Cliente> clientes = ClientesFacade.buscarTodos();
                 request.setAttribute("clientes", clientes);
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/clientesListar.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesListar.jsp");
                 rd.forward(request, response);
             } else if ("show".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
                 Cliente cliente = ClientesFacade.buscar(id);
                 request.setAttribute("cliente", cliente);
                 request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/clientesVisualizar.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesVisualizar.jsp");
                 rd.forward(request, response);
             } else if ("formUpdate".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
@@ -63,7 +63,7 @@ public class ClientesServlet extends HttpServlet {
                 request.setAttribute("estados", estados);
                 request.setAttribute("cliente", cliente);
                 request.setAttribute("form", "alterar");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/clientesForm.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesForm.jsp");
                 rd.forward(request, response);
             } else if ("remove".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
@@ -113,7 +113,7 @@ public class ClientesServlet extends HttpServlet {
                 List<Estado> estados = EstadosFacade.buscarTodos();
                 
                 request.setAttribute("estados", estados);
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/clientesForm.jsp");
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesForm.jsp");
                 rd.forward(request, response);
                 //response.sendRedirect("clientesNovo.jsp");
             } else if ("new".equals(action)) {
@@ -155,7 +155,7 @@ public class ClientesServlet extends HttpServlet {
             }
         } else {
             request.setAttribute("msg", "Usuário deve se autenticar para acessar o sistema");
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/index.jsp");
             rd.forward(request, response);
         }
         
