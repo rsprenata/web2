@@ -74,7 +74,11 @@ public class AtendimentoServlet extends HttpServlet {
                 
                 String dataTela = request.getParameter("dataAtual");
                 SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm");
-                Date data = formato.parse(dataTela);
+                try{
+                    Date data = formato.parse(dataTela);
+                }catch(Exception e){
+                    
+                }
                 
                 Integer idTipoAtendimento = Integer.parseInt(request.getParameter("tipoAtendimento"));
                 
