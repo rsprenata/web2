@@ -2,6 +2,7 @@ package com.ufpr.tads.web2.dao;
 
 import com.ufpr.tads.web2.beans.Atendimento;
 import com.ufpr.tads.web2.beans.Cliente;
+import com.ufpr.tads.web2.beans.Produto;
 import com.ufpr.tads.web2.beans.Usuario;
 import com.ufpr.tads.web2.facade.CidadesFacade;
 import java.sql.Connection;
@@ -24,26 +25,26 @@ public class AtendimentoDao {
             stmt = connection.prepareStatement("SELECT * FROM tb_atendimento");
             rs = stmt.executeQuery();
             
+            Produto produto = new Produto();
+            Cliente cliente = new Cliente();
+            Usuario usuario = new Usuario();
             while (rs.next()) {
                 Atendimento atendimento = new Atendimento();
+                
+                produto.setId(rs.getInt("id_produto"));
+                usuario.setId(rs.getInt("id_usuario"));
+                cliente.setId(rs.getInt("id_cliente"));
+                
                 
                 atendimento.setId(rs.getInt("id_atendimento"));
                 atendimento.setData(rs.getDate("dt_hr_atendimento"));
                 atendimento.setDescricao(rs.getString("dsc_atendimento"));
-                //atendimento.setIdProduto???
+                atendimento.setProduto(produto);
                 atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
-                //atendimento.setUsuario();
-                //atendimento.setCliente(cliente);
-                cliente.setCpf(rs.getString("cpf_cliente"));
-                cliente.setNome(rs.getString("nome_cliente"));
-                cliente.setEmail(rs.getString("email_cliente"));
-                cliente.setData(new Date(rs.getTimestamp("data_cliente").getTime()));
-                cliente.setRua(rs.getString("rua_cliente"));
-                cliente.setNr(rs.getInt("nr_cliente"));
-                cliente.setCep("cep_cliente");
-                cliente.setCidade(CidadesFacade.carregarUma(rs.getInt("id_cidade")));
+                atendimento.setUsuario(usuario);
+                atendimento.setCliente(cliente);
                 
-                clientes.add(cliente);
+                atendimentos.add(atendimento);
             }
         } catch (SQLException exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
@@ -59,7 +60,9 @@ public class AtendimentoDao {
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
         
-        return clientes;
+        return atendimentos;
     }
+    
+    
     
 }
