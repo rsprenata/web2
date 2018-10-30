@@ -26,15 +26,15 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="container navbar-nav">
                 <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger" href="ClientesServlet">Cadastro de Clientes</a>
+                  <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/ClientesServlet">Cadastro de Clientes</a>
                 </li>              
                 <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger" href="atendimentoListar.jsp">Atendimentos</a>
+                  <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/AtendimentoServlet">Atendimentos</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger" href="LogoutServlet">Sair</a>
+                  <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/LogoutServlet">Sair</a>
                 </li>
-              </ul>
+               </ul>
             </div>
         </nav>
         <div class="container wrapper">

@@ -7,17 +7,19 @@ package com.ufpr.tads.web2.facade;
 
 import com.ufpr.tads.web2.beans.Atendimento;
 import com.ufpr.tads.web2.beans.Cliente;
+import com.ufpr.tads.web2.beans.TipoAtendimento;
 import com.ufpr.tads.web2.dao.AtendimentoDao;
 import com.ufpr.tads.web2.dao.ClienteDao;
+import com.ufpr.tads.web2.dao.TipoAtendimentoDao;
 import java.util.List;
 
 /**
  *
  * @author renata.pereira
  */
-public class AtendimentoFacade {
-    private static final AtendimentoDao aDao = new AtendimentoDao();
-    public static List<Atendimento> buscarTodos() {
+public class TipoAtendimentoFacade {
+    private static final TipoAtendimentoDao aDao = new TipoAtendimentoDao();
+    public static List<TipoAtendimento> buscarTodos() {
         return aDao.carregarTodos();
     }
     

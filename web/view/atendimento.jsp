@@ -45,27 +45,46 @@
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="card">
-                        <!--<div class="card-header">
-                            <h3 class="card-title">${form == 'alterar' ? 'Alterar' : 'Adicionar'} cliente</h3>
-                        </div> -->
+                        <div class="card-header">
+                            <h3 class="card-title">Atendimento</h3>
+                        </div>
                         <div class="card-body">
-                            <form id="formulario" action="AtendimentoServlet?action=${form == 'alterar' ? 'update' : 'new'}" method="post">
-                                <c:if test="${form == 'alterar'}">
-                                    <input type="hidden" name="id" value="${cliente.id}" />
-                                </c:if> 
+                            <form id="formulario" action="AtendimentoServlet?action=new" method="post">                               
+                            <jsp:useBean id="now" class="java.util.Date" />
+                            <fmt:formatDate var="dataAtual" value="${now}" pattern="dd/MM/yyyy kk:mm" />
+                                <div class="form-group">
+                                    <input class="form-control" id="dataAtual" name="dataAtual" value="${dataAtual}" readonly/>
+                                      
+                                </div>
+                                
                                 <div class="form-group">
                                     <select class="form-control" id="selectTipoAtendimento" name="tipoAtendimento" required>
                                       <option value="">Tipo de Atendimento</option>
+                                      <c:forEach items="${tiposAtendimento}" var="tipo">
+                                          <option value="${tipo.id}">
+                                              ${tipo.nome}
+                                          </option>
+                                      </c:forEach>
                                     </select>
                                 </div>                               
                                 <div class="form-group">
                                     <select class="form-control" id="selectCliente" name="cliente" required>
                                       <option value="">Cliente</option>
+                                      <c:forEach items="${clientes}" var="cliente">
+                                          <option value="${cliente.id}">
+                                              ${cliente.nome}/${cliente.cpf}
+                                          </option>
+                                      </c:forEach>
                                     </select>
                                 </div>  
                                 <div class="form-group">
                                     <select class="form-control" id="selectProduto" name="produto" required multiple> <!--multiple pode selecionar mais de 1 com ctrl -->
                                       <option value="">Produtos</option>
+                                      <c:forEach items="${produtos}" var="produto">
+                                          <option value="${produto.id}">
+                                              ${produto.nome}
+                                          </option>
+                                      </c:forEach>
                                     </select>
                                 </div>
                                 <button class="btn btn-lg btn-success btn-block" type="submit">
