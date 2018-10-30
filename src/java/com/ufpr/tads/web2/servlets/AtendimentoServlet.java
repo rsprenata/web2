@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.ufpr.tads.web2.servlets;
 
 import com.ufpr.tads.web2.beans.Atendimento;
@@ -89,6 +84,18 @@ public class AtendimentoServlet extends HttpServlet {
                 
                 Integer cliente = Integer.parseInt(request.getParameter("cliente"));
                 
+                
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
+                rd.forward(request, response);
+            } else if ("formNew".equals(action)) {
+                List<TipoAtendimento> tiposAtendimento = TipoAtendimentoFacade.buscarTodos();
+                request.setAttribute("tiposAtendimento", tiposAtendimento);
+                
+                List<Produto> produtos = ProdutoFacade.buscarTodos();
+                request.setAttribute("produtos", produtos);
+                
+                List<Cliente> clientes = ClientesFacade.buscarTodos();
+                request.setAttribute("clientes", clientes);
                 
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
                 rd.forward(request, response);

@@ -1,4 +1,4 @@
-package com.ufpr.tads.web2.servlets;
+    package com.ufpr.tads.web2.servlets;
 
 import com.ufpr.tads.web2.beans.Cidade;
 import com.ufpr.tads.web2.beans.Cliente;
