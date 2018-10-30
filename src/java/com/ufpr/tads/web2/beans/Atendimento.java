@@ -20,7 +20,7 @@ public class Atendimento {
     private Integer tipoAtendimento;
     private Cliente cliente;
     private Usuario usuario;
-    private String resolvido; //comentario teste commit
+    private String resolvido;
 
     public Atendimento() {
     }
