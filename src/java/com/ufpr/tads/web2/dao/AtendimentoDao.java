@@ -28,6 +28,12 @@ public class AtendimentoDao {
                 Atendimento atendimento = new Atendimento();
                 
                 atendimento.setId(rs.getInt("id_atendimento"));
+                atendimento.setData(rs.getDate("dt_hr_atendimento"));
+                atendimento.setDescricao(rs.getString("dsc_atendimento"));
+                //atendimento.setIdProduto???
+                atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
+                //atendimento.setUsuario();
+                //atendimento.setCliente(cliente);
                 cliente.setCpf(rs.getString("cpf_cliente"));
                 cliente.setNome(rs.getString("nome_cliente"));
                 cliente.setEmail(rs.getString("email_cliente"));
