@@ -13,21 +13,21 @@ import java.util.Date;
 import java.util.List;
 
 public class AtendimentoDao {
-    public List<Atendimento> carregarTodos() { /*
+    public List<Atendimento> carregarTodos() { 
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        List<Cliente> clientes = new ArrayList<Cliente>();
+        List<Atendimento> atendimentos = new ArrayList<Atendimento>();
         
         try { 
-            stmt = connection.prepareStatement("SELECT * FROM tb_cliente");
+            stmt = connection.prepareStatement("SELECT * FROM tb_atendimento");
             rs = stmt.executeQuery();
             
             while (rs.next()) {
-                Cliente cliente = new Cliente();
+                Atendimento atendimento = new Atendimento();
                 
-                cliente.setId(rs.getInt("id_cliente"));
+                atendimento.setId(rs.getInt("id_atendimento"));
                 cliente.setCpf(rs.getString("cpf_cliente"));
                 cliente.setNome(rs.getString("nome_cliente"));
                 cliente.setEmail(rs.getString("email_cliente"));
@@ -54,6 +54,6 @@ public class AtendimentoDao {
         }
         
         return clientes;
-    */return null;}
+    }
     
 }

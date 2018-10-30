@@ -51,6 +51,8 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!--data/hora, produto e nome do cliente. Deve apresentar um botão de detalhes que apresenta a
+                              tela atendimentoDetalhes.jsp ; -->
                     <c:forEach items="${atedimentos}" var="atendimentos">
                         <tr>
                             <td>${data}</td>

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,15 +63,28 @@ public class AtendimentoServlet extends HttpServlet {
                 request.setAttribute("atendimentos", atendimentos);
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
                 rd.forward(request, response);
-            }else if ("formNew".equals(action)) {
-                List<TipoAtendimento> tiposAtendimento = TipoAtendimentoFacade.buscarTodos();
-                request.setAttribute("tiposAtendimento", tiposAtendimento);
+            } else if ("show".equals(action)) {
+                Integer id = Integer.parseInt(request.getParameter("id"));
+                Cliente cliente = ClientesFacade.buscar(id);
+                request.setAttribute("cliente", cliente);
+                request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
+                rd.forward(request, response);
+            } else if ("new".equals(action)) {
                 
-                List<Produto> produtos = ProdutoFacade.buscarTodos();
-                request.setAttribute("produtos", produtos);
+                String dataTela = request.getParameter("dataAtual");
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm");
+                Date data = formato.parse(dataTela);
                 
-                List<Cliente> clientes = ClientesFacade.buscarTodos();
-                request.setAttribute("clientes", clientes);
+                Integer idTipoAtendimento = Integer.parseInt(request.getParameter("tipoAtendimento"));
+                
+                
+                Integer produto = Integer.parseInt(request.getParameter("produto"));
+               
+                
+                
+                Integer cliente = Integer.parseInt(request.getParameter("cliente"));
+                
                 
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
                 rd.forward(request, response);

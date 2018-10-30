@@ -28,10 +28,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="container navbar-nav">
                 <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger active" href="ClientesServlet">Cadastro de Clientes</a>
+                  <a class="nav-link js-scroll-trigger" href="ClientesServlet">Cadastro de Clientes</a>
                 </li>               
                 <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger" href="atendimentoListar.jsp">Atendimentos</a>
+                  <a class="nav-link js-scroll-trigger active" href="AtendimentoServlet">Atendimentos</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="LogoutServlet">Sair</a>
@@ -51,7 +51,7 @@
                         <div class="card-body">
                             <form id="formulario" action="AtendimentoServlet?action=new" method="post">                               
                             <jsp:useBean id="now" class="java.util.Date" />
-                            <fmt:formatDate var="dataAtual" value="${now}" pattern="dd/MM/yyyy kk:mm" />
+                            <fmt:formatDate var="dataAtual" value="${now}" pattern="dd/MM/yyyy HH:mm" />
                                 <div class="form-group">
                                     <input class="form-control" id="dataAtual" name="dataAtual" value="${dataAtual}" readonly/>
                                       
@@ -72,14 +72,14 @@
                                       <option value="">Cliente</option>
                                       <c:forEach items="${clientes}" var="cliente">
                                           <option value="${cliente.id}">
-                                              ${cliente.nome}/${cliente.cpf}
+                                              ${cliente.nome}/CPF:${cliente.cpf}
                                           </option>
                                       </c:forEach>
                                     </select>
                                 </div>  
                                 <div class="form-group">
-                                    <select class="form-control" id="selectProduto" name="produto" required multiple> <!--multiple pode selecionar mais de 1 com ctrl -->
-                                      <option value="">Produtos</option>
+                                    <select class="form-control" id="selectProduto" name="produto" required> <!--multiple pode selecionar mais de 1 com ctrl -->
+                                        <option value="">Produto</option>
                                       <c:forEach items="${produtos}" var="produto">
                                           <option value="${produto.id}">
                                               ${produto.nome}
