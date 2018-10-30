@@ -49,13 +49,15 @@ public class Atendimento {
         this.descricao = descricao;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public Produto getProduto() {
+        return produto;
     }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
+
+   
 
     public Integer getTipoAtendimento() {
         return tipoAtendimento;
