@@ -12,6 +12,7 @@ import com.ufpr.tads.web2.beans.Estado;
 import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.beans.Produto;
 import com.ufpr.tads.web2.beans.TipoAtendimento;
+import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
 import com.ufpr.tads.web2.facade.AtendimentoFacade;
 import com.ufpr.tads.web2.facade.ClientesFacade;
 import com.ufpr.tads.web2.facade.EstadosFacade;
@@ -65,11 +66,19 @@ public class AtendimentoServlet extends HttpServlet {
                 rd.forward(request, response);
             } else if ("show".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
-                Cliente cliente = ClientesFacade.buscar(id);
-                request.setAttribute("cliente", cliente);
-                request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
-                rd.forward(request, response);
+                Cliente cliente;
+                try {
+                    cliente = ClientesFacade.buscar(id);
+                    
+                    request.setAttribute("cliente", cliente);
+                    request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
+                    rd.forward(request, response);
+                } catch (ClienteNaoExisteException ex) {
+                    request.setAttribute("msg", ex.getMessage());
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/AtendimentoServlet?action=list");
+                    rd.forward(request, response);
+                }
             } else if ("new".equals(action)) {
                 
                 String dataTela = request.getParameter("dataAtual");

@@ -3,9 +3,12 @@ package com.ufpr.tads.web2.servlets;
 import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.beans.Usuario;
 import com.ufpr.tads.web2.dao.UsuarioDao;
+import com.ufpr.tads.web2.exceptions.UsuarioSenhaInvalidosException;
 import com.ufpr.tads.web2.facade.LoginFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,22 +35,20 @@ public class LoginServlet extends HttpServlet {
         String senha = request.getParameter("senha");
         
         
-        Usuario usuario = LoginFacade.loginValido(login, senha);
-        
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            if (usuario != null) {
-                LoginBean lb = new LoginBean();
-                lb.setId(usuario.getId());
-                lb.setNome(usuario.getNome());
-                HttpSession session = request.getSession();
-                session.setAttribute("logado", lb);
-                response.sendRedirect("view/portal.jsp");
-            } else {
-                request.setAttribute("msg", "Usuário/Senha inválidos.");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/index.jsp");
-                rd.forward(request, response);
-            }
+        Usuario usuario = null;
+        try {
+            usuario = LoginFacade.loginValido(login, senha);
+            
+            LoginBean lb = new LoginBean();
+            lb.setId(usuario.getId());
+            lb.setNome(usuario.getNome());
+            HttpSession session = request.getSession();
+            session.setAttribute("logado", lb);
+            response.sendRedirect("view/portal.jsp");
+        } catch (UsuarioSenhaInvalidosException ex) {
+            request.setAttribute("msg", ex.getMessage());
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/index.jsp");
+            rd.forward(request, response);
         }
     }
 

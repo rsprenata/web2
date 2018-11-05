@@ -5,6 +5,8 @@ import com.ufpr.tads.web2.beans.Cliente;
 import com.ufpr.tads.web2.beans.Estado;
 import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.dao.ClienteDao;
+import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
+import com.ufpr.tads.web2.exceptions.ErroInserindoClienteException;
 import com.ufpr.tads.web2.facade.ClientesFacade;
 import com.ufpr.tads.web2.facade.EstadosFacade;
 import java.io.IOException;
@@ -50,21 +52,37 @@ public class ClientesServlet extends HttpServlet {
                 rd.forward(request, response);
             } else if ("show".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
-                Cliente cliente = ClientesFacade.buscar(id);
-                request.setAttribute("cliente", cliente);
-                request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesVisualizar.jsp");
-                rd.forward(request, response);
+                Cliente cliente;
+                try {
+                    cliente = ClientesFacade.buscar(id);
+                    
+                    request.setAttribute("cliente", cliente);
+                    request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesVisualizar.jsp");
+                    rd.forward(request, response);
+                } catch (ClienteNaoExisteException ex) {
+                    request.setAttribute("msg", ex.getMessage());
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/ClientesServlet?action=list");
+                    rd.forward(request, response);
+                }
             } else if ("formUpdate".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
-                Cliente cliente = ClientesFacade.buscar(id);
-                List<Estado> estados = EstadosFacade.buscarTodos();
-                
-                request.setAttribute("estados", estados);
-                request.setAttribute("cliente", cliente);
-                request.setAttribute("form", "alterar");
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesForm.jsp");
-                rd.forward(request, response);
+                Cliente cliente;
+                try {
+                    cliente = ClientesFacade.buscar(id);
+                    
+                    List<Estado> estados = EstadosFacade.buscarTodos();
+
+                    request.setAttribute("estados", estados);
+                    request.setAttribute("cliente", cliente);
+                    request.setAttribute("form", "alterar");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/clientesForm.jsp");
+                    rd.forward(request, response);
+                } catch (ClienteNaoExisteException ex) {
+                    request.setAttribute("msg", ex.getMessage());
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/ClientesServlet?action=list");
+                    rd.forward(request, response);
+                }
             } else if ("remove".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
                 ClientesFacade.remover(id);
@@ -117,7 +135,10 @@ public class ClientesServlet extends HttpServlet {
                 rd.forward(request, response);
                 //response.sendRedirect("clientesNovo.jsp");
             } else if ("new".equals(action)) {
-                Cliente cliente = new Cliente();
+                request.setAttribute("erro", new ErroInserindoClienteException().getMessage());
+                        RequestDispatcher rdt = getServletContext().getRequestDispatcher("/ClientesServlet?action=new");
+                        rdt.forward(request, response);
+                /*Cliente cliente = new Cliente();
                 cliente.setCpf(request.getParameter("cpf"));
                 cliente.setNome(request.getParameter("nome"));
                 cliente.setEmail(request.getParameter("email"));
@@ -148,10 +169,17 @@ public class ClientesServlet extends HttpServlet {
                     request.setAttribute("erro", "Email já cadastrado.");
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/ClientesServlet?action=formNew");
                     rd.forward(request, response);
-                } else {//TUDO OK
-                    ClientesFacade.inserir(cliente);
-                    response.sendRedirect("ClientesServlet");
-                }
+                } else {
+                    try {
+                        //TUDO OK
+                        ClientesFacade.inserir(cliente);
+                        response.sendRedirect("ClientesServlet");
+                    } catch (ErroInserindoClienteException ex) {
+                        request.setAttribute("msg", ex.getMessage());
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/ClientesServlet?action=list");
+                        rd.forward(request, response);
+                    }
+                }*/
             }
         } else {
             request.setAttribute("msg", "Usuário deve se autenticar para acessar o sistema");

@@ -39,6 +39,14 @@
         <div class="container wrapper">
             <h1>Olá ${logado.nome}</h1>
 
+            <c:if test="${msg != null}">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    ${msg}
+                </div>
+            </c:if>
             <div class="text-center form-group">
                 <a href="ClientesServlet?action=formNew" class="btn btn-success">NOVO</a>
             </div>

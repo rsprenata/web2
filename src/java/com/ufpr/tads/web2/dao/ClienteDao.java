@@ -2,6 +2,8 @@ package com.ufpr.tads.web2.dao;
 
 import com.ufpr.tads.web2.beans.Cliente;
 import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
+import com.ufpr.tads.web2.exceptions.ErroInserindoClienteException;
 import com.ufpr.tads.web2.facade.CidadesFacade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -55,7 +57,7 @@ public class ClienteDao {
         return clientes;
     }
     
-    public Cliente carregarUm(Integer id) {
+    public Cliente carregarUm(Integer id) throws ClienteNaoExisteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -79,7 +81,7 @@ public class ClienteDao {
                 cliente.setNr(rs.getInt("nr_cliente"));
                 cliente.setCep(rs.getString("cep_cliente"));
                 cliente.setCidade(CidadesFacade.carregarUma(rs.getInt("id_cidade")));
-            }
+            } else throw new ClienteNaoExisteException();
         } catch (SQLException exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
         } finally {
@@ -149,7 +151,7 @@ public class ClienteDao {
         }
     }
     
-    public void adicionarUm(Cliente cliente) {
+    public void adicionarUm(Cliente cliente) throws ErroInserindoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -168,7 +170,7 @@ public class ClienteDao {
             stmt.setInt(8, cliente.getCidade().getId());
             stmt.executeUpdate();
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroInserindoClienteException();
         } finally {
             if (rs != null)
                 try { rs.close(); }
