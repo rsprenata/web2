@@ -13,6 +13,7 @@ import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.beans.Produto;
 import com.ufpr.tads.web2.beans.TipoAtendimento;
 import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
+import com.ufpr.tads.web2.exceptions.ErroBuscandoClienteException;
 import com.ufpr.tads.web2.facade.AtendimentoFacade;
 import com.ufpr.tads.web2.facade.ClientesFacade;
 import com.ufpr.tads.web2.facade.EstadosFacade;
@@ -74,7 +75,7 @@ public class AtendimentoServlet extends HttpServlet {
                     request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
                     rd.forward(request, response);
-                } catch (ClienteNaoExisteException ex) {
+                } catch (ClienteNaoExisteException | ErroBuscandoClienteException ex) {
                     request.setAttribute("msg", ex.getMessage());
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/AtendimentoServlet?action=list");
                     rd.forward(request, response);
