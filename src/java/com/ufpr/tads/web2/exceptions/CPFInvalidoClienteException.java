@@ -7,10 +7,10 @@ package com.ufpr.tads.web2.exceptions;
 
 /**
  *
- * @author gomes
+ * @author renata
  */
-public class AppException extends Exception {
-    public AppException (String mensagem) {
-        super(mensagem);
+public class CPFInvalidoClienteException extends AppException {
+    public CPFInvalidoClienteException() {
+        super("CPF inválido !");
     }
 }

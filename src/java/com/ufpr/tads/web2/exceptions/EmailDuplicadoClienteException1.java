@@ -7,10 +7,10 @@ package com.ufpr.tads.web2.exceptions;
 
 /**
  *
- * @author gomes
+ * @author renata
  */
-public class AppException extends Exception {
-    public AppException (String mensagem) {
-        super(mensagem);
+public class EmailDuplicadoClienteException1 extends AppException {
+    public EmailDuplicadoClienteException1() {
+        super("Email já cadastrado !");
     }
 }

@@ -43,6 +43,7 @@ public class AtendimentoDao {
                 atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
                 atendimento.setUsuario(usuario);
                 atendimento.setCliente(cliente);
+                atendimento.setResolvido(rs.getString("res_atendimento"));
                 
                 atendimentos.add(atendimento);
             }
@@ -61,6 +62,40 @@ public class AtendimentoDao {
         }
         
         return atendimentos;
+    }
+    
+    public void inserirAtendimento (Atendimento atendimento){
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            ConnectionFactory connectionFactory = new ConnectionFactory();
+            con = connectionFactory.getConnection();
+            stmt = con.prepareStatement("INSERT INTO tb_atendimento (dt_hr_atendimento, dsc_atendimento, id_produto, id_tipo_atendimento, id_usuario, id_cliente, res_atendimento) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
+            stmt.setDate(1, (java.sql.Date) atendimento.getData());
+            stmt.setString(2, atendimento.getDescricao());
+            stmt.setInt(3, atendimento.getProduto().getId());
+            stmt.setInt(4, atendimento.getTipoAtendimento());
+            stmt.setInt(5, atendimento.getUsuario().getId());
+            stmt.setInt(6, atendimento.getCliente().getId());
+            stmt.setString(7, atendimento.getResolvido());
+            stmt.executeUpdate();   
+        }
+        catch (SQLException ex) {
+            throw new RuntimeException("Erro ao cadastrar usuario" + ex.getMessage());
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
     }
     
     

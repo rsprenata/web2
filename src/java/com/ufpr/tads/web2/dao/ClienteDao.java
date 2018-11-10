@@ -2,6 +2,13 @@ package com.ufpr.tads.web2.dao;
 
 import com.ufpr.tads.web2.beans.Cliente;
 import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.exceptions.CPFDuplicadoClienteException;
+import com.ufpr.tads.web2.exceptions.CPFInvalidoClienteException;
+import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
+import com.ufpr.tads.web2.exceptions.ErroBuscandoClienteException;
+import com.ufpr.tads.web2.exceptions.ErroEditandoClienteException;
+import com.ufpr.tads.web2.exceptions.ErroInserindoClienteException;
+import com.ufpr.tads.web2.exceptions.ErroRemovendoClienteException;
 import com.ufpr.tads.web2.facade.CidadesFacade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,9 +17,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 
 public class ClienteDao {
-    public List<Cliente> carregarTodos() {
+    public List<Cliente> carregarTodos() throws ErroBuscandoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -39,7 +47,7 @@ public class ClienteDao {
                 clientes.add(cliente);
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroBuscandoClienteException();
         } finally {
             if (rs != null)
                 try { rs.close(); }
@@ -55,7 +63,7 @@ public class ClienteDao {
         return clientes;
     }
     
-    public Cliente carregarUm(Integer id) {
+    public Cliente carregarUm(Integer id) throws ClienteNaoExisteException, ErroBuscandoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -79,9 +87,9 @@ public class ClienteDao {
                 cliente.setNr(rs.getInt("nr_cliente"));
                 cliente.setCep(rs.getString("cep_cliente"));
                 cliente.setCidade(CidadesFacade.carregarUma(rs.getInt("id_cidade")));
-            }
+            } else throw new ClienteNaoExisteException();
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroBuscandoClienteException();
         } finally {
             if (rs != null)
                 try { rs.close(); }
@@ -97,7 +105,7 @@ public class ClienteDao {
         return cliente;
     }
     
-    public void removerUm(Integer id) {
+    public void removerUm(Integer id) throws ErroRemovendoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -107,7 +115,7 @@ public class ClienteDao {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroRemovendoClienteException();
         } finally {
             if (stmt != null)
                 try { stmt.close(); }
@@ -118,7 +126,7 @@ public class ClienteDao {
         }
     }
     
-    public void editarUm(Cliente cliente) {
+    public void editarUm(Cliente cliente) throws ErroEditandoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -138,7 +146,7 @@ public class ClienteDao {
             stmt.setInt(9, cliente.getId());
             stmt.executeUpdate();
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroEditandoClienteException();
         } finally {
             if (stmt != null)
                 try { stmt.close(); }
@@ -149,7 +157,7 @@ public class ClienteDao {
         }
     }
     
-    public void adicionarUm(Cliente cliente) {
+    public void adicionarUm(Cliente cliente) throws ErroInserindoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -168,7 +176,7 @@ public class ClienteDao {
             stmt.setInt(8, cliente.getCidade().getId());
             stmt.executeUpdate();
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroInserindoClienteException();
         } finally {
             if (rs != null)
                 try { rs.close(); }
@@ -182,7 +190,7 @@ public class ClienteDao {
         }
     }
     
-    public int validar(Cliente cliente) {
+    public void validar(Cliente cliente) throws CPFDuplicadoClienteException, ErroBuscandoClienteException, CPFInvalidoClienteException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -195,7 +203,7 @@ public class ClienteDao {
             rs = stmt.executeQuery();
             
             if (rs.next()) {
-                return 1;
+                throw new CPFDuplicadoClienteException();
             }
             
             stmt = connection.prepareStatement("SELECT * FROM tb_cliente WHERE email_cliente = ? AND id_cliente != ?");
@@ -204,10 +212,14 @@ public class ClienteDao {
             rs = stmt.executeQuery();
             
             if (rs.next()) {
-                return 2;
+                throw new CPFDuplicadoClienteException();
+            }
+            
+            if (!cliente.validoCPF()) {
+                throw new CPFInvalidoClienteException();
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroBuscandoClienteException();
         } finally {
             if (rs != null)
                 try { rs.close(); }
@@ -219,7 +231,5 @@ public class ClienteDao {
                 try { connection.close(); }
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
-        
-        return 3;
     }
 }

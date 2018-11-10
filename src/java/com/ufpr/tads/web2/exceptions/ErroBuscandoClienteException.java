@@ -7,10 +7,10 @@ package com.ufpr.tads.web2.exceptions;
 
 /**
  *
- * @author gomes
+ * @author renata
  */
-public class AppException extends Exception {
-    public AppException (String mensagem) {
-        super(mensagem);
+public class ErroBuscandoClienteException extends AppException {
+    public ErroBuscandoClienteException() {
+        super("Erro ao buscar cliente, tente novamente mais tarde.");
     }
 }

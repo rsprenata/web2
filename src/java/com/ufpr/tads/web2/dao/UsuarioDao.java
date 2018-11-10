@@ -1,6 +1,7 @@
 package com.ufpr.tads.web2.dao;
 
 import com.ufpr.tads.web2.beans.Usuario;
+import com.ufpr.tads.web2.exceptions.UsuarioSenhaInvalidosException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UsuarioDao {
-    public Usuario loginValido(String login, String senha) {
+    public Usuario loginValido(String login, String senha) throws UsuarioSenhaInvalidosException {
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -42,7 +43,7 @@ public class UsuarioDao {
                 usuario.setSenha(rs.getString("senha_usuario"));
                 usuario.setNome(rs.getString("nome_usuario"));
                 System.out.println(rs.getString("nome_usuario"));
-            }
+            } else throw new UsuarioSenhaInvalidosException();
         } catch (SQLException exception) {
             throw new RuntimeException("Erro. Origem="+exception.getMessage());
         } finally {
