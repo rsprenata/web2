@@ -72,10 +72,9 @@ public class AtendimentoDao {
             ConnectionFactory connectionFactory = new ConnectionFactory();
             con = connectionFactory.getConnection();
 
-            stmt = con.prepareStatement("INSERT INTO tb_atendimento (dt_hr_atendimento, dsc_atendimento, id_produto, id_tipo_atendimento, id_usuario, id_cliente, res_atendimento) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-
-
+            stmt = con.prepareStatement("INSERT INTO tb_atendimento (dt_hr_atendimento, dsc_atendimento, \n" +
+"		id_produto, id_tipo_atendimento, id_cliente) "
+                    + "VALUES (?, ?, ?, ?, ?)");
             stmt.setDate(1, (java.sql.Date) atendimento.getData());
             stmt.setString(2, atendimento.getDescricao());
             stmt.setInt(3, atendimento.getProduto().getId());
