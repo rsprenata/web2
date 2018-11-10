@@ -77,23 +77,31 @@ public class AtendimentoServlet extends HttpServlet {
                 }
             } else if ("new".equals(action)) {
                 
+                Atendimento t = new Atendimento();
+                
                 String dataTela = request.getParameter("dataAtual");
                 SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm");
                 try{
                     Date data = formato.parse(dataTela);
+                    t.setData(data);
                 }catch(Exception e){
                     
                 }
                 
                 Integer idTipoAtendimento = Integer.parseInt(request.getParameter("tipoAtendimento"));
-                
+                t.setTipoAtendimento(idTipoAtendimento);
                 
                 Integer produto = Integer.parseInt(request.getParameter("produto"));
-               
-                
+                Produto p = new Produto();
+                p.setId(produto);
+                t.setProduto(p);
                 
                 Integer cliente = Integer.parseInt(request.getParameter("cliente"));
-                
+                Cliente c = new Cliente();
+                c.setId(cliente);
+                t.setCliente(c);
+                t.setDescricao(request.getParameter());
+                AtendimentoFacade.inserir();
                 
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
                 rd.forward(request, response);
