@@ -22,5 +22,8 @@ public class ProdutoFacade {
     public static List<Produto> buscarTodos() {
         return pDao.carregarTodos();
     }
+    public static Produto buscar(Integer id) {
+        return pDao.buscarUm(id);
+    }
     
 }

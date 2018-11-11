@@ -21,7 +21,17 @@ public class Atendimento {
     private Cliente cliente;
     private Usuario usuario;
     private String resolvido;
+    private TipoAtendimento tipo;
 
+    public TipoAtendimento getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoAtendimento tipo) {
+        this.tipo = tipo;
+    }
+
+    
     public Atendimento() {
     }
 

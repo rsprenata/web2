@@ -54,5 +54,40 @@ public class TipoAtendimentoDao {
         
         return tiposAtendimento;
     }
+    public TipoAtendimento buscar(Integer idTipo) { 
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        TipoAtendimento tipoAtendimento = null;
+        
+        try { 
+            stmt = connection.prepareStatement("SELECT * FROM tb_tipo_atendimento WHERE id_tipo_atendimento = ?");
+            stmt.setInt(1, idTipo);
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                tipoAtendimento = new TipoAtendimento();
+                
+                tipoAtendimento.setId(rs.getInt("id_tipo_atendimento"));
+                tipoAtendimento.setNome(rs.getString("nome_tipo_atendimento"));
+                
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return tipoAtendimento;
+    }
     
 }

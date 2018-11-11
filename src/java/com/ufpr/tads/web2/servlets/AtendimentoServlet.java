@@ -1,12 +1,11 @@
 package com.ufpr.tads.web2.servlets;
 
 import com.ufpr.tads.web2.beans.Atendimento;
-import com.ufpr.tads.web2.beans.Cidade;
 import com.ufpr.tads.web2.beans.Cliente;
-import com.ufpr.tads.web2.beans.Estado;
 import com.ufpr.tads.web2.beans.LoginBean;
 import com.ufpr.tads.web2.beans.Produto;
 import com.ufpr.tads.web2.beans.TipoAtendimento;
+import com.ufpr.tads.web2.beans.Usuario;
 import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
 import com.ufpr.tads.web2.exceptions.ErroBuscandoClienteException;
 import com.ufpr.tads.web2.facade.AtendimentoFacade;
@@ -15,8 +14,6 @@ import com.ufpr.tads.web2.facade.EstadosFacade;
 import com.ufpr.tads.web2.facade.ProdutoFacade;
 import com.ufpr.tads.web2.facade.TipoAtendimentoFacade;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -55,27 +52,22 @@ public class AtendimentoServlet extends HttpServlet {
         if (lb != null) {
             String action = request.getParameter("action");
 
-            if ("list".equals(action) || null == action || "".equals(action)) {
-                List<Atendimento> atendimentos = AtendimentoFacade.buscarTodos();
+            if ("mostrar".equals(action) || null == action || "".equals(action)) {
+                List<Atendimento> atendimentos = AtendimentoFacade.buscarByUsuario(lb.getId());
                 request.setAttribute("atendimentos", atendimentos);
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
                 rd.forward(request, response);
-            } else if ("show".equals(action)) {
+            } else if ("detalhes".equals(action)) {
                 Integer id = Integer.parseInt(request.getParameter("id"));
-                Cliente cliente;
-                try {
-                    cliente = ClientesFacade.buscar(id);
-                    
-                    request.setAttribute("cliente", cliente);
-                    request.setAttribute("estado", EstadosFacade.carregarUm(cliente.getCidade().getIdEstado()));
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoListar.jsp");
-                    rd.forward(request, response);
-                } catch (ClienteNaoExisteException | ErroBuscandoClienteException ex) {
-                    request.setAttribute("msg", ex.getMessage());
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/AtendimentoServlet?action=list");
-                    rd.forward(request, response);
-                }
-            } else if ("new".equals(action)) {
+                Atendimento atendimento;
+                
+                atendimento = AtendimentoFacade.buscar(id);
+
+                request.setAttribute("atendimento", atendimento);
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimentoDetalhes.jsp");
+                rd.forward(request, response);
+                
+            } else if ("efetuar".equals(action)) {
                 
                 Atendimento t = new Atendimento();
                 
@@ -100,20 +92,33 @@ public class AtendimentoServlet extends HttpServlet {
                 Cliente c = new Cliente();
                 c.setId(cliente);
                 t.setCliente(c);
-                t.setDescricao(request.getParameter());
-                AtendimentoFacade.inserir();
+                t.setDescricao(request.getParameter("descricao"));
                 
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
-                rd.forward(request, response);
-            } else if ("formNew".equals(action)) {
+                if (request.getParameter("resolvido") != null) t.setResolvido("S");
+                else t.setResolvido("N");
+                
+                Usuario usuario = new Usuario();
+                usuario.setId(lb.getId());
+                t.setUsuario(usuario);
+                
+                AtendimentoFacade.atender(t);
+                
+                
+                response.sendRedirect("AtendimentoServlet");
+            } else if ("efetuarForm".equals(action)) {
                 List<TipoAtendimento> tiposAtendimento = TipoAtendimentoFacade.buscarTodos();
                 request.setAttribute("tiposAtendimento", tiposAtendimento);
                 
                 List<Produto> produtos = ProdutoFacade.buscarTodos();
                 request.setAttribute("produtos", produtos);
                 
-                List<Cliente> clientes = ClientesFacade.buscarTodos();
-                request.setAttribute("clientes", clientes);
+                List<Cliente> clientes;
+                try {
+                    clientes = ClientesFacade.buscarTodos();
+                    request.setAttribute("clientes", clientes);
+                } catch (ErroBuscandoClienteException ex) {
+                    Logger.getLogger(AtendimentoServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/view/atendimento.jsp");
                 rd.forward(request, response);

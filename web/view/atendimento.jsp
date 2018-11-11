@@ -30,8 +30,14 @@
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="ClientesServlet">Cadastro de Clientes</a>
                 </li>               
-                <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger active" href="AtendimentoServlet">Atendimentos</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Atendimentos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=efetuarForm">Efetuar atendimento</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=mostrar">Mostrar atendimentos</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="LogoutServlet">Sair</a>
@@ -49,7 +55,7 @@
                             <h3 class="card-title">Atendimento</h3>
                         </div>
                         <div class="card-body">
-                            <form id="formulario" action="AtendimentoServlet?action=new" method="post">                               
+                            <form id="formulario" action="AtendimentoServlet?action=efetuar" method="post">                               
                             <jsp:useBean id="now" class="java.util.Date" />
                             <fmt:formatDate var="dataAtual" value="${now}" pattern="dd/MM/yyyy HH:mm" />
                                 <div class="form-group">
@@ -86,6 +92,14 @@
                                           </option>
                                       </c:forEach>
                                     </select>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="resolvido" name="resolvido" value="resolvido">
+                                    <label class="form-check-label" for="resolvido">Resolvido</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao">Descrição</label>
+                                    <textarea class="form-control" id="descricao" rows="3" name="descricao"></textarea>
                                 </div>
                                 <button class="btn btn-lg btn-success btn-block" type="submit">
                                     ${form == 'alterar' ? 'Alterar' : 'Salvar'}

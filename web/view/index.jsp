@@ -25,7 +25,7 @@
                                     ${msg}
                                 </div>
                             </c:if>
-                            <form action="LoginServlet" method="post">
+                            <form action="${pageContext.request.contextPath}/LoginServlet" method="post">
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Login" type="text" name="login" autofocus="" />
                                 </div>

@@ -22,5 +22,8 @@ public class TipoAtendimentoFacade {
     public static List<TipoAtendimento> buscarTodos() {
         return aDao.carregarTodos();
     }
+    public static TipoAtendimento buscar(Integer tipo) {
+        return aDao.buscar(tipo);
+    }
     
 }

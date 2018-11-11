@@ -17,8 +17,13 @@ import java.util.List;
  */
 public class AtendimentoFacade {
     private static final AtendimentoDao aDao = new AtendimentoDao();
-    public static List<Atendimento> buscarTodos() {
-        return aDao.carregarTodos();
+    public static List<Atendimento> buscarByUsuario(Integer idUsuario) {
+        return aDao.buscarByUsuario(idUsuario);
     }
-    
+    public static Atendimento buscar(Integer idAtendimento) {
+        return aDao.buscar(idAtendimento);
+    }
+    public static void atender(Atendimento at) {
+        aDao.atender(at);
+    }
 }

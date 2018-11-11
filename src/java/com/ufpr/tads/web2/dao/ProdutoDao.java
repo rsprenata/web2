@@ -56,4 +56,40 @@ public class ProdutoDao {
         return produtos;
     }
     
+    public Produto buscarUm(Integer id) {
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Produto produto = null;
+        
+        try { 
+            stmt = connection.prepareStatement("SELECT * FROM tb_produto WHERE id_produto = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                produto = new Produto();
+                
+                produto.setId(rs.getInt("id_produto"));
+                produto.setNome(rs.getString("nome_produto"));
+                
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } finally {
+            if (rs != null)
+                try { rs.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
+            if (stmt != null)
+                try { stmt.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+        
+        return produto;
+    }
+    
 }

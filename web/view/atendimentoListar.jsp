@@ -27,8 +27,14 @@
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/ClientesServlet">Cadastro de Clientes</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link js-scroll-trigger active" href="${pageContext.request.contextPath}/AtendimentoServlet">Atendimentos</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Atendimentos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=efetuarForm">Efetuar atendimento</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=mostrar">Mostrar atendimentos</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/LogoutServlet">Sair</a>
@@ -39,9 +45,6 @@
         <div class="container wrapper">
             <h1>Olá ${logado.nome}</h1>
 
-            <div class="text-center form-group">
-                <a href="AtendimentoServlet?action=formNew" class="btn btn-success">NOVO</a>
-            </div>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -53,55 +56,24 @@
                 <tbody>
                     <!--data/hora, produto e nome do cliente. Deve apresentar um botão de detalhes que apresenta a
                               tela atendimentoDetalhes.jsp ; -->
-                    <c:forEach items="${atedimentos}" var="atendimentos">
+                    <c:forEach items="${atendimentos}" var="atendimento">
                         <tr>
-                            <td>${data}</td>
-                            <td>${cliente.nome}</td>
-                            <td>${produto.nome}</td>
+                            <td>${atendimento.data}</td>
+                            <td>${atendimento.cliente.nome}</td>
+                            <td>${atendimento.produto.nome}</td>
                             <td>
-                                <a href="ClientesServlet?action=show&id=${cliente.id}" class="btn"><i class="fas fa-eye"></i></a>
-                                <a href="ClientesServlet?action=formUpdate&id=${cliente.id}" class="btn"><i class="fas fa-edit"></i></a>
-                                <button class="btn btn-link btnRemover" onclick="confirmarRemover('${cliente.id}')"><i class="fas fa-trash"></i></button>
+                                <a href="AtendimentoServlet?action=detalhes&id=${atendimento.id}" class="btn"><i class="fas fa-eye"></i></a>
                             </td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
         </div>
-            
-        <div class="modal fade" id="modalConfirmarRemover" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Confirmar</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Deseja realmente remover este cliente?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <a id="linkRemover" class="btn btn-primary">Confirmar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
         
         <script src="${pageContext.request.contextPath}/resources/js/popper.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/js/jquery-3.3.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/bootstrap-4.1.3-dist/js/bootstrap.min.js"></script>
         <script src="${pageContext.request.contextPath}/resources/jQuery-Mask-Plugin-master/dist/jquery.mask.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $(".cpf").mask("000.000.000-00");
-            });
-            function confirmarRemover(idCliente) {
-                $('#modalConfirmarRemover #linkRemover').attr("href", "ClientesServlet?action=remove&id=" + idCliente);
-                $('#modalConfirmarRemover').modal("show");
-            }
-        </script>
     </body>
     <footer class="footer">
         <div class="footer-copyright text-center">
