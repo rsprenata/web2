@@ -5,7 +5,9 @@ import com.ufpr.tads.web2.beans.Cliente;
 import com.ufpr.tads.web2.beans.Produto;
 import com.ufpr.tads.web2.beans.Usuario;
 import com.ufpr.tads.web2.exceptions.ClienteNaoExisteException;
+import com.ufpr.tads.web2.exceptions.ErroBuscandoAtendimentoException;
 import com.ufpr.tads.web2.exceptions.ErroBuscandoClienteException;
+import com.ufpr.tads.web2.exceptions.ErroEfetuarAtendimentoException;
 import com.ufpr.tads.web2.facade.ClientesFacade;
 import com.ufpr.tads.web2.facade.ProdutoFacade;
 import com.ufpr.tads.web2.facade.TipoAtendimentoFacade;
@@ -20,7 +22,7 @@ import java.util.List;
 
 
 public class AtendimentoDao {
-    public List<Atendimento> buscarByUsuario(Integer idUsuario) { 
+    public List<Atendimento> buscarByUsuario(Integer idUsuario) throws ErroBuscandoAtendimentoException { 
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -59,23 +61,23 @@ public class AtendimentoDao {
                 atendimentos.add(atendimento);
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+            throw new ErroBuscandoAtendimentoException();
         } finally {
-            if (rs != null)
-                try { rs.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
-            if (stmt != null)
-                try { stmt.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
-            if (connection != null)
-                try { connection.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+            try { 
+                if (rs != null)
+                    rs.close(); 
+
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException exception) {throw new ErroBuscandoAtendimentoException();}
         }
         
         return atendimentos;
     }
     
-    public Atendimento buscar(Integer idAtendimento) { 
+    public Atendimento buscar(Integer idAtendimento) throws ErroBuscandoAtendimentoException { 
         ConnectionFactory connectionFactory = new ConnectionFactory();
         Connection connection = connectionFactory.getConnection();
         PreparedStatement stmt = null;
@@ -96,15 +98,8 @@ public class AtendimentoDao {
                 produto = ProdutoFacade.buscar(rs.getInt("id_produto"));
                 usuario.setId(rs.getInt("id_usuario"));
                 
-                atendimento.setTipo(TipoAtendimentoFacade.buscar(rs.getInt("id_tipo_atendimento")));
-                try {
-                    cliente = ClientesFacade.buscar(rs.getInt("id_cliente"));
-                } catch (ClienteNaoExisteException ex) {
-                    Logger.getLogger(AtendimentoDao.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ErroBuscandoClienteException ex) {
-                    Logger.getLogger(AtendimentoDao.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
+                atendimento.setTipo(TipoAtendimentoFacade.buscar(rs.getInt("id_tipo_atendimento")));        
+                cliente = ClientesFacade.buscar(rs.getInt("id_cliente"));   
                 atendimento.setId(rs.getInt("id_atendimento"));
                 atendimento.setData(rs.getDate("dt_hr_atendimento"));
                 atendimento.setDescricao(rs.getString("dsc_atendimento"));
@@ -115,24 +110,24 @@ public class AtendimentoDao {
                 atendimento.setResolvido(rs.getString("res_atendimento"));
                 
             }
-        } catch (SQLException exception) {
-            throw new RuntimeException("Erro. Origem="+exception.getMessage());
+        } catch (SQLException | ErroBuscandoClienteException | ClienteNaoExisteException exception) {
+            throw new ErroBuscandoAtendimentoException();
         } finally {
-            if (rs != null)
-                try { rs.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar rs. Ex="+exception.getMessage()); }
-            if (stmt != null)
-                try { stmt.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
-            if (connection != null)
-                try { connection.close(); }
-                catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+            try { 
+                if (rs != null)
+                    rs.close(); 
+
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException exception) {throw new ErroBuscandoAtendimentoException();}
         }
         
         return atendimento;
     }
     
-    public void atender(Atendimento atendimento){
+    public void atender(Atendimento atendimento) throws ErroEfetuarAtendimentoException{
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -153,18 +148,14 @@ public class AtendimentoDao {
             stmt.executeUpdate();   
         }
         catch (SQLException ex) {
-            throw new RuntimeException("Erro ao cadastrar usuario" + ex.getMessage());
+            throw new ErroEfetuarAtendimentoException();
         } finally {
-            try {
-                stmt.close();
-            } catch (Exception ex) {
-                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
-            };
-            try {
-                con.close();
-            } catch (Exception ex) {
-                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
-            };
+            try { 
+                if (stmt != null)
+                    stmt.close();
+                if (con != null)
+                    con.close();
+            } catch (SQLException exception) {throw new ErroEfetuarAtendimentoException();}
         }
     }
     
