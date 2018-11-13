@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2018-11-13T11:19:14 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="atendimentosTipo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="72f3aeff-39b8-44cf-bf32-3489f6f1e7f7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Postgres"/>
+	<parameter name="tipoId" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select TO_CHAR(a.dt_hr_atendimento, 'dd/mm/yyyy hh:mi') as dt_hr_atendimento, c.nome_cliente, ta.nome_tipo_atendimento, case when res_atendimento = 'S' then 'Resolvido' else 'Não Resolvido' end as estado
+from tb_atendimento a 
+join tb_cliente c on c.id_cliente = a.id_cliente
+join tb_tipo_atendimento ta on ta.id_tipo_atendimento = a.id_tipo_atendimento
+where ta.id_tipo_atendimento =  $P{tipoId} 
+order by a.dt_hr_atendimento]]>
+	</queryString>
+	<field name="dt_hr_atendimento" class="java.lang.String"/>
+	<field name="nome_cliente" class="java.lang.String"/>
+	<field name="nome_tipo_atendimento" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="10" y="10" width="540" height="40" uuid="8c610f95-a3c3-4cc7-8ed7-d166be9df609"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ATENDIMENTOS POR TIPO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30">
+			<staticText>
+				<reportElement x="22" y="0" width="100" height="30" uuid="5931b13b-4b1f-4f4a-b074-860ae6cb0867"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data/Hora]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="0" width="100" height="30" uuid="7cb18b27-fd4c-4351-8294-f5699ef331f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="306" y="0" width="100" height="30" uuid="3ce40130-162a-4e18-b00c-15532af3ad31"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="456" y="0" width="100" height="30" uuid="618fcdef-4f37-4ae5-acd6-02b903e81a75"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="68" splitType="Stretch">
+			<textField>
+				<reportElement x="22" y="19" width="100" height="30" uuid="f6e12c04-766d-4a5e-bcea-be7ea6aa08e8"/>
+				<textFieldExpression><![CDATA[$F{dt_hr_atendimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="166" y="20" width="100" height="30" uuid="c2fc8b86-c522-48ed-ba69-8acaac5cade9"/>
+				<textFieldExpression><![CDATA[$F{nome_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="310" y="20" width="100" height="30" uuid="54382ac1-b8fe-4897-b566-b9159aba3830"/>
+				<textFieldExpression><![CDATA[$F{nome_tipo_atendimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="456" y="20" width="100" height="30" uuid="61fd2ac6-d8d0-4264-bb49-26794bee7fa1"/>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

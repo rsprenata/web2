@@ -36,7 +36,10 @@
                       <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=efetuarForm">Efetuar atendimento</a>
                       <a class="dropdown-item" href="${pageContext.request.contextPath}/AtendimentoServlet?action=mostrar">Mostrar atendimentos</a>
                     </div>
-                </li>
+                </li>      
+                <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/RelatoriosServlet">Relatórios</a>
+                </li>   
                 <li class="nav-item">
                   <a class="nav-link js-scroll-trigger" href="${pageContext.request.contextPath}/LogoutServlet">Sair</a>
                 </li>
