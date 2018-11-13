@@ -421,6 +421,9 @@ CREATE TABLE tb_atendimento (
 	FOREIGN KEY (id_cliente) REFERENCES tb_cliente (id_cliente)
 );
 
+ALTER TABLE tb_atendimento DROP COLUMN dt_hr_atendimento;
+ALTER TABLE tb_atendimento ADD COLUMN dt_hr_atendimento TIMESTAMP;
+
 
 INSERT INTO tb_produto (nome_produto) values ('Conversor USB para Serial');
 INSERT INTO tb_produto (nome_produto) values ('SSD 120GB Sandisk SSD Plus 310MB/530MB/s 20X');

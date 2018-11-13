@@ -11,6 +11,7 @@ import com.ufpr.tads.web2.exceptions.ErroEfetuarAtendimentoException;
 import com.ufpr.tads.web2.facade.ClientesFacade;
 import com.ufpr.tads.web2.facade.ProdutoFacade;
 import com.ufpr.tads.web2.facade.TipoAtendimentoFacade;
+import com.ufpr.tads.web2.facade.UsuarioFacade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,7 +51,7 @@ public class AtendimentoDao {
                     Logger.getLogger(AtendimentoDao.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 atendimento.setId(rs.getInt("id_atendimento"));
-                atendimento.setData(rs.getDate("dt_hr_atendimento"));
+                atendimento.setData(rs.getTimestamp("dt_hr_atendimento"));
                 atendimento.setDescricao(rs.getString("dsc_atendimento"));
                 atendimento.setProduto(produto);
                 atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
@@ -101,13 +102,14 @@ public class AtendimentoDao {
                 atendimento.setTipo(TipoAtendimentoFacade.buscar(rs.getInt("id_tipo_atendimento")));        
                 cliente = ClientesFacade.buscar(rs.getInt("id_cliente"));   
                 atendimento.setId(rs.getInt("id_atendimento"));
-                atendimento.setData(rs.getDate("dt_hr_atendimento"));
+                atendimento.setData(rs.getTimestamp("dt_hr_atendimento"));
                 atendimento.setDescricao(rs.getString("dsc_atendimento"));
                 atendimento.setProduto(produto);
                 atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
                 atendimento.setUsuario(usuario);
                 atendimento.setCliente(cliente);
                 atendimento.setResolvido(rs.getString("res_atendimento"));
+                atendimento.setUsuario(UsuarioFacade.buscar(rs.getInt("id_usuario")));
                 
             }
         } catch (SQLException | ErroBuscandoClienteException | ClienteNaoExisteException exception) {
@@ -138,7 +140,7 @@ public class AtendimentoDao {
             stmt = con.prepareStatement("INSERT INTO tb_atendimento (dt_hr_atendimento, dsc_atendimento, \n" +
 "		id_produto, id_tipo_atendimento, id_cliente, id_usuario, res_atendimento) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?)");
-            stmt.setDate(1, new java.sql.Date(atendimento.getData().getTime()));
+            stmt.setTimestamp(1, new java.sql.Timestamp(atendimento.getData().getTime()));
             stmt.setString(2, atendimento.getDescricao());
             stmt.setInt(3, atendimento.getProduto().getId());
             stmt.setInt(4, atendimento.getTipoAtendimento());
@@ -160,5 +162,130 @@ public class AtendimentoDao {
     }
     
     
+    public List<Atendimento> buscarTodos() { 
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Atendimento> atendimentos = new ArrayList<Atendimento>();
+        
+        try { 
+            stmt = connection.prepareStatement("SELECT * FROM tb_atendimento");
+            rs = stmt.executeQuery();
+            
+            Produto produto = new Produto();
+            Cliente cliente = new Cliente();
+            Usuario usuario = new Usuario();
+            while (rs.next()) {
+                Atendimento atendimento = new Atendimento();
+                
+                produto = ProdutoFacade.buscar(rs.getInt("id_produto"));
+                usuario.setId(rs.getInt("id_usuario"));                
+                try {
+                    cliente = ClientesFacade.buscar(rs.getInt("id_cliente"));
+                } catch (ClienteNaoExisteException ex) {
+                    Logger.getLogger(AtendimentoDao.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ErroBuscandoClienteException ex) {
+                    Logger.getLogger(AtendimentoDao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                atendimento.setId(rs.getInt("id_atendimento"));
+                atendimento.setData(rs.getTimestamp("dt_hr_atendimento"));
+                atendimento.setDescricao(rs.getString("dsc_atendimento"));
+                atendimento.setProduto(produto);
+                atendimento.setTipoAtendimento(rs.getInt("id_tipo_atendimento"));
+                atendimento.setUsuario(usuario);
+                atendimento.setCliente(cliente);
+                atendimento.setResolvido(rs.getString("res_atendimento"));
+                
+                atendimentos.add(atendimento);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception.getMessage());
+        } finally {
+            try { 
+                if (rs != null)
+                    rs.close(); 
+
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException exception) {throw new RuntimeException(exception.getMessage());}
+        }
+        
+        return atendimentos;
+    }
     
+    public void removerUm(Integer id){
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = connection.prepareStatement("DELETE FROM tb_atendimento WHERE id_atendimento = ?");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+
+    public void editarUm(Atendimento atendimento){
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE tb_atendimento "
+                + "SET dt_hr_atendimento = ?, dsc_atendimento = ?, id_produto = ?, id_tipo_atendimento = ?"
+                    + "id_usuario = ?, id_cliente = ?, res_atendimento = ? WHERE id_atendimento = ?");
+            stmt.setTimestamp(1, new java.sql.Timestamp(atendimento.getData().getTime()));
+            stmt.setString(2, atendimento.getDescricao());
+            stmt.setInt(3, atendimento.getProduto().getId());
+            stmt.setInt(4, atendimento.getTipoAtendimento());
+            stmt.setInt(5, atendimento.getUsuario().getId());
+            stmt.setInt(6, atendimento.getCliente().getId());
+            stmt.setString(7, atendimento.getResolvido());
+            stmt.setInt(8, atendimento.getId());
+            stmt.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
+    
+    public void resolver(Atendimento atendimento){
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        Connection connection = connectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = connection.prepareStatement("UPDATE tb_atendimento "
+                + "SET res_atendimento = 'S' WHERE id_atendimento = ?");
+            stmt.setInt(1, atendimento.getId());
+            stmt.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception.getMessage());
+        } finally {
+            if (stmt != null)
+                try { stmt.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+            if (connection != null)
+                try { connection.close(); }
+            catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+        }
+    }
 }

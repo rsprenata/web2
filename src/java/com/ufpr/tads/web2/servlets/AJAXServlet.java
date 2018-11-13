@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.ufpr.tads.web2.beans.Cidade;
 import com.ufpr.tads.web2.facade.CidadesFacade;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

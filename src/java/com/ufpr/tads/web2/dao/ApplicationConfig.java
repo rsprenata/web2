@@ -29,7 +29,11 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(com.ufpr.tads.web2.dao.AtendimentoResource.class);
+        resources.add(com.ufpr.tads.web2.dao.ClienteResource.class);
         resources.add(com.ufpr.tads.web2.dao.ProdutoResource.class);
+        resources.add(com.ufpr.tads.web2.dao.TipoAtendimentoResource.class);
+        resources.add(com.ufpr.tads.web2.dao.UsuarioResource.class);
     }
     
 }

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" errorPage="erro.jsp"%>
 <c:if test="${sessionScope.logado == null}">
     <c:set var="msg" value="Usuário deve se autenticar para acessar o sistema." scope="request" />
@@ -58,7 +59,7 @@
                               tela atendimentoDetalhes.jsp ; -->
                     <c:forEach items="${atendimentos}" var="atendimento">
                         <tr>
-                            <td>${atendimento.data}</td>
+                            <td><fmt:formatDate value="${atendimento.data}" pattern="dd/MM/yyyy HH:mm" /></td>
                             <td>${atendimento.cliente.nome}</td>
                             <td>${atendimento.produto.nome}</td>
                             <td>

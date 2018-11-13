@@ -44,4 +44,17 @@ public class AtendimentoFacade {
             Logger.getLogger(AtendimentoFacade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public static List<Atendimento> buscarTodos() {
+        return aDao.buscarTodos();
+    }
+    public static void remover(int id) {
+        aDao.removerUm(id);
+    }
+    public static void alterar(Atendimento a){
+        aDao.editarUm(a);
+    }
+    public static void resolver(Atendimento a){
+        aDao.resolver(a);
+    }
 }

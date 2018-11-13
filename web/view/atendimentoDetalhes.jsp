@@ -62,16 +62,16 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <input class="form-control" value="${atendimento.tipo.nome}" readonly/>
+                                    <input class="form-control" value="Tipo: ${atendimento.tipo.nome}" readonly/>
                                 </div>                               
                                 <div class="form-group">
-                                    <input class="form-control" value="${atendimento.cliente.nome}" readonly/>
+                                    <input class="form-control" value="Cliente: ${atendimento.cliente.nome}" readonly/>
                                 </div>  
                                 <div class="form-group">
-                                    <input class="form-control" value="${atendimento.produto.nome}" readonly/>
+                                    <input class="form-control" value="Produto: ${atendimento.produto.nome}" readonly/>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" value="${atendimento.resolvido=='S' ? 'Resolvido' : 'Não resolvido'}" readonly/>
+                                    <input class="form-control" value="Status: ${atendimento.resolvido=='S' ? 'Resolvido' : 'Não resolvido'}" readonly/>
                                 </div>
                                 <div class="form-group">
                                     <label for="descricao">Descrição</label>
