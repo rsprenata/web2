@@ -9,7 +9,11 @@ import com.ufpr.tads.web2.beans.Atendimento;
 import com.ufpr.tads.web2.beans.Cliente;
 import com.ufpr.tads.web2.dao.AtendimentoDao;
 import com.ufpr.tads.web2.dao.ClienteDao;
+import com.ufpr.tads.web2.exceptions.ErroBuscandoAtendimentoException;
+import com.ufpr.tads.web2.exceptions.ErroEfetuarAtendimentoException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,12 +22,26 @@ import java.util.List;
 public class AtendimentoFacade {
     private static final AtendimentoDao aDao = new AtendimentoDao();
     public static List<Atendimento> buscarByUsuario(Integer idUsuario) {
-        return aDao.buscarByUsuario(idUsuario);
+        try {
+            return aDao.buscarByUsuario(idUsuario);
+        } catch (ErroBuscandoAtendimentoException ex) {
+            Logger.getLogger(AtendimentoFacade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     public static Atendimento buscar(Integer idAtendimento) {
-        return aDao.buscar(idAtendimento);
+        try {
+            return aDao.buscar(idAtendimento);
+        } catch (ErroBuscandoAtendimentoException ex) {
+            Logger.getLogger(AtendimentoFacade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     public static void atender(Atendimento at) {
-        aDao.atender(at);
+        try {
+            aDao.atender(at);
+        } catch (ErroEfetuarAtendimentoException ex) {
+            Logger.getLogger(AtendimentoFacade.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -89,7 +89,74 @@ public class ProdutoDao {
                 catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
         }
         
+    
+        
         return produto;
     }
+    
+    public void removerUm(Integer id){
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    Connection connection = connectionFactory.getConnection();
+    PreparedStatement stmt = null;
+
+    try {
+        stmt = connection.prepareStatement("DELETE FROM tb_produto WHERE id_produto = ?");
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
+    } catch (SQLException exception) {
+        throw new RuntimeException(exception.getMessage());
+    } finally {
+        if (stmt != null)
+            try { stmt.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+        if (connection != null)
+            try { connection.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+    }
+}
+
+public void editarUm(Produto produto){
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    Connection connection = connectionFactory.getConnection();
+    PreparedStatement stmt = null;
+
+    try {
+        stmt = connection.prepareStatement("UPDATE tb_produto "
+            + "SET nome_produto = ? WHERE id_produto = ?");
+        stmt.setString(1, produto.getNome());
+        stmt.setInt(2, produto.getId());
+        stmt.executeUpdate();
+    } catch (SQLException exception) {
+        throw new RuntimeException(exception.getMessage());
+    } finally {
+        if (stmt != null)
+            try { stmt.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+        if (connection != null)
+            try { connection.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+    }
+}
+
+public void adicionarUm(Produto produto){
+    ConnectionFactory connectionFactory = new ConnectionFactory();
+    Connection connection = connectionFactory.getConnection();
+    PreparedStatement stmt = null;
+
+    try {
+        stmt = connection.prepareStatement("INSERT INTO tb_produto (nome_produto) VALUES (?)");
+        stmt.setString(1, produto.getNome());
+        stmt.executeUpdate();
+    } catch (SQLException exception) {
+        throw new RuntimeException(exception.getMessage());
+    } finally {
+        if (stmt != null)
+            try { stmt.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar stmt. Ex="+exception.getMessage()); }
+        if (connection != null)
+            try { connection.close(); }
+        catch (SQLException exception) { System.out.println("Erro ao fechar conexão. Ex="+exception.getMessage()); }
+    }
+}
     
 }

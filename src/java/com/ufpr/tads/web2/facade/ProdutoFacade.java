@@ -25,5 +25,14 @@ public class ProdutoFacade {
     public static Produto buscar(Integer id) {
         return pDao.buscarUm(id);
     }
+    public static void remover(int id) {
+    pDao.removerUm(id);
+    }
+    public static void alterar(Produto p){
+        pDao.editarUm(p);
+    }
+    public static void inserir(Produto p) {
+        pDao.adicionarUm(p);
+    }
     
 }
